@@ -62,7 +62,7 @@ export default function Home() {
             <Image src="/image3.svg" width={100} height={100} alt="logo" />
             <span className="flex flex-col">
             <p className="font-bold text-gray-500">Access Anywhere</p>
-            <p className=" text-gray-500">Sync your notes across all devices. Stay productive whether you're on your phone, tablet, or computer.</p>
+            <p className=" text-gray-500">Sync your notes across all devices. Stay productive whether you&apos;re on your phone, tablet, or computer.</p>
             </span>
           </div>
         </div>
@@ -79,7 +79,7 @@ export default function Home() {
           </div>
           <div className="flex gap-4">
           <button className="p-2 text-gray-500 rounded-lg flex gap-3">
-            <p>Calender View</p>
+            <p>Calendar View</p>
             <Calendar />
           </button>
           <button className="p-2 text-gray-500 rounded-lg flex gap-3">
