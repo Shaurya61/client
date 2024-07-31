@@ -4,17 +4,15 @@ import { RootState } from '../store';
 import { Task } from '@/types';
 import Cookies from 'js-cookie';
 
+// Fetch tasks
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
-  const token = Cookies.get('token'); // Retrieve token from Cookies
-
+  const token = Cookies.get('token');
   const response = await axios.get('/api/tasks', {
     headers: {
-      Authorization: `Bearer ${token}`, // Include the token in the headers
+      Authorization: `Bearer ${token}`,
     },
   });
 
-  console.log('API response:', response.data); // Log the raw API response
-  
   const tasks: Task[] = response.data.map((task: any) => ({
     id: task._id,
     title: task.title,
@@ -22,31 +20,50 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
     status: task.status,
     priority: task.priority,
     deadline: task.deadline,
-    createdAt: task.createdAt, // Include the createdAt field
+    createdAt: task.createdAt,
   }));
-  
+
   return tasks;
 });
 
+// Create task
 export const createTask = createAsyncThunk(
   'tasks/createTask',
-  async (task: Task, { getState }) => {
-    const token = Cookies.get('token'); // Retrieve token from Cookies
-
+  async (task: Task) => {
+    const token = Cookies.get('token');
     if (!token) {
       throw new Error('User is not authenticated');
     }
 
     const response = await axios.post('/api/tasks', task, {
       headers: {
-        Authorization: `Bearer ${token}`, // Include the token in the headers
+        Authorization: `Bearer ${token}`,
       },
     });
 
     return {
       ...response.data,
-      id: response.data.id, // Ensure the id is included in the returned task
+      id: response.data.id,
     } as Task;
+  }
+);
+
+// Update task status
+export const updateTaskStatus = createAsyncThunk(
+  'tasks/updateTaskStatus',
+  async (task: Task) => {
+    const token = Cookies.get('token');
+    if (!token) {
+      throw new Error('User is not authenticated');
+    }
+
+    const response = await axios.put(`/api/tasks/${task.id}`, task, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data as Task;
   }
 );
 
@@ -74,7 +91,6 @@ const taskSlice = createSlice({
       .addCase(fetchTasks.fulfilled, (state, action: PayloadAction<Task[]>) => {
         state.status = 'succeeded';
         state.tasks = action.payload;
-        console.log('Fetched tasks:', state.tasks.map(task => task.id)); // Log fetched task IDs
       })
       .addCase(fetchTasks.rejected, (state, action) => {
         state.status = 'failed';
@@ -86,11 +102,16 @@ const taskSlice = createSlice({
       .addCase(createTask.fulfilled, (state, action: PayloadAction<Task>) => {
         state.status = 'succeeded';
         state.tasks.push(action.payload);
-        console.log('Created task with id:', action.payload.id); // Log created task ID
       })
       .addCase(createTask.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to create task';
+      })
+      .addCase(updateTaskStatus.fulfilled, (state, action: PayloadAction<Task>) => {
+        const index = state.tasks.findIndex(task => task.id === action.payload.id);
+        if (index !== -1) {
+          state.tasks[index] = action.payload;
+        }
       });
   },
 });

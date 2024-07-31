@@ -61,7 +61,7 @@ const AuthForm = () => {
   }, [dispatch, router]);
 
   return (
-    <section className="bg-custom-gradient h-screen flex justify-center items-center text-black">
+    <section className="h-screen flex justify-center items-center text-black" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #AFA3FF 100%)' }}>
       <div className="bg-form-gradient w-1/3 rounded-lg p-8">
         <h1 className="text-3xl text-center mb-6 font-bold">Welcome to <span className="text-indigo-700">Workflo!</span></h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

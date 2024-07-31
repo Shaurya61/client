@@ -1,4 +1,3 @@
-// Home.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -8,8 +7,10 @@ import TaskBoard from "@/components/TaskBoard";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchTasks } from "@/redux/slices/taskSlices";
 import { RootState, AppDispatch } from "@/redux/store";
-import { Search, Calendar, Filter, Share2, SearchIcon } from "lucide-react"; // Import required icons
+import { Search, Calendar, Filter, Share2, CircleHelp, CirclePlus } from "lucide-react"; // Import required icons
 import Image from "next/image";
+import Link from "next/link";
+import { CreateTask } from "@/components/CreateTask"; // Import the CreateTask component
 
 export default function Home() {
   const dispatch: AppDispatch = useDispatch();
@@ -32,33 +33,36 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <Sidebar />
+      <Sidebar openTaskForm={() => setTaskFormOpen(true)} /> {/* Pass the callback to Sidebar */}
       <div className="flex-1 p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold">
             {user ? `Good morning, ${user.name}!` : "Loading..."}
           </h1>
+          <span className="flex gap-2">Help & Feedback 
+          <CircleHelp className="text-gray-500" />
+          </span>
         </div>
         <div className="flex justify-evenly mb-4 gap-2">
           <div className="bg-white flex p-6 rounded-md">
             <Image src="/image1.svg" width={100} height={100} alt="logo" />
             <span className="flex flex-col">
-              <p>Introducing tags</p>
-              <p>Easily categorize and find your notes by adding tags. Keep your workspace clutter-free and efficient.</p>
+            <p className="font-bold text-gray-500">Introducing tags</p>
+            <p className=" text-gray-500">Easily categorize and find your notes by adding tags. Keep your workspace clutter-free and efficient.</p>
             </span>
           </div>
           <div className="bg-white flex p-6 rounded-md">
             <Image src="/image2.svg" width={100} height={100} alt="logo" />
             <span className="flex flex-col">
-              <p>Introducing tags</p>
-              <p>Easily categorize and find your notes by adding tags. Keep your workspace clutter-free and efficient.</p>
+              <p className="font-bold text-gray-500">Share Notes Instantly</p>
+              <p className=" text-gray-500">Effortlessly share your notes with others via email or link. Enhance collaboration with quick sharing options.</p>
             </span>
           </div>
           <div className="bg-white flex p-6 rounded-md">
             <Image src="/image3.svg" width={100} height={100} alt="logo" />
             <span className="flex flex-col">
-              <p>Introducing tags</p>
-              <p>Easily categorize and find your notes by adding tags. Keep your workspace clutter-free and efficient.</p>
+            <p className="font-bold text-gray-500">Access Anywhere</p>
+            <p className=" text-gray-500">Sync your notes across all devices. Stay productive whether you're on your phone, tablet, or computer.</p>
             </span>
           </div>
         </div>
@@ -91,17 +95,18 @@ export default function Home() {
             <Share2 />
           </button>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            onClick={() => setTaskFormOpen(!isTaskFormOpen)}
+            onClick={() => setTaskFormOpen(true)} // Open the task form
+            className=" bg-indigo-800 text-white font-medium p-3 rounded-md flex gap-4"
           >
-            Create new task
+            Create new
+            <CirclePlus className=" bg-white text-indigo-700 rounded-full" />
           </button>
           </div>
         </div>
 
         {isTaskFormOpen && (
           <div className="mb-6">
-            <TaskForm />
+            <CreateTask closeSheet={() => setTaskFormOpen(false)} defaultStatus="To do" /> {/* Pass the close function */}
           </div>
         )}
 
